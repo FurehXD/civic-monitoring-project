@@ -1,0 +1,9 @@
+.BgSquare {
+  background-color: #ffffff;
+  border-radius: 15px;
+  position: fixed;
+  top: 1rem;
+  left: 24rem;
+  width: 79%;
+  height: 97vh;
+}

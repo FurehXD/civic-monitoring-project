@@ -1,0 +1,34 @@
+[
+    {
+        "CODE": "A",
+        "RANGE %": 0.4,
+        "ABC ITEMS": 50,
+        "% ITEMS": 0.0113791534,
+        "TOTAL AMOUNT": 182999308.52,
+        "% SALES": 0.3978218757
+    },
+    {
+        "CODE": "B",
+        "RANGE %": 0.8,
+        "ABC ITEMS": 244,
+        "% ITEMS": 0.0555302685,
+        "TOTAL AMOUNT": 184933539.29,
+        "% SALES": 0.4020266965
+    },
+    {
+        "CODE": "C",
+        "RANGE %": ">80%",
+        "ABC ITEMS": 4101,
+        "% ITEMS": 0.9333181611,
+        "TOTAL AMOUNT": 92070283.53,
+        "% SALES": 0.2001514278
+    },
+    {
+        "CODE": null,
+        "RANGE %": null,
+        "ABC ITEMS": 4395,
+        "% ITEMS": 1.0002275831,
+        "TOTAL AMOUNT": 460003131.34,
+        "% SALES": 1.0
+    }
+]

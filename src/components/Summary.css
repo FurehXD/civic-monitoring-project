@@ -1,0 +1,33 @@
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.scrollable-container {
+  max-height: 125px;
+  width: 50%;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 0px 15px;
+  text-align: center;
+  border-bottom: 1px solid #000;
+  
+}
+
+th {
+  background-color: #9e9b9b;
+}
+
+td {
+  background-color: #d9d9d9;
+}
