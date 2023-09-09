@@ -6,7 +6,7 @@
 }
 
 .scrollable-container {
-  max-height: 125px;
+  max-height: 150px;
   width: 50%;
   overflow-y: auto;
   border: 1px solid #ddd;

@@ -8,10 +8,10 @@ import BarGraph from './components/BarGraph';
 
 function App() {
   const [rawData, setRawData] = useState([]);
+  const [selectedPivot, setSelectedPivot] = useState("PIVOT VALUES");
 
   useEffect(() => {
-    // List of all XLSX files in the public folder.
-    const files = ['Sany.xlsx', 'SDLG.xlsx', 'trucks.xlsx', 'UD.xlsx', 'Volvo_CE.xlsx'];
+    const files = ['Sany.xlsx', 'SDLG.xlsx', 'trucks.xlsx', 'UD.xlsx', 'Volvo_CE.xlsx', 'Bobcat.xlsx'];
 
     let combinedData = [];
 
@@ -21,7 +21,7 @@ function App() {
           .then(response => response.arrayBuffer())
           .then(buffer => {
             const workbook = XLSX.read(buffer, { type: 'buffer' });
-            const worksheet = workbook.Sheets["PIVOT VALUES"];
+            const worksheet = workbook.Sheets[selectedPivot]; // Use the selectedPivot here
             if (worksheet) {
               const jsonData = XLSX.utils.sheet_to_json(worksheet);
               combinedData.push(...jsonData);
@@ -30,7 +30,7 @@ function App() {
       )
     ).then(() => setRawData(combinedData));
 
-  }, []);
+  }, [selectedPivot]);  // Dependency on selectedPivot added
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -39,7 +39,7 @@ function App() {
       reader.onload = function(e) {
         const buffer = e.target.result;
         const workbook = XLSX.read(buffer, { type: 'binary' });
-        const worksheet = workbook.Sheets["PIVOT VALUES"];
+        const worksheet = workbook.Sheets[selectedPivot];  // Use the selectedPivot here
         if (worksheet) {
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
           setRawData(prevData => [...prevData, ...jsonData]);
@@ -67,32 +67,41 @@ function App() {
 
   }, [rawData]);
 
+  const handlePivotChange = (e) => {
+    setSelectedPivot(e.target.value);
+  };
+
   return (
     <div className="App">
-      <input 
-        type="file" 
-        accept=".xlsx" 
-        id="fileInput" 
-        style={{ display: 'none' }} 
-        onChange={handleFileChange} 
-      />
-      <button onClick={() => document.getElementById('fileInput').click()}>
-        Upload .xlsx File
-      </button>
+    <div className="leftRectangle"></div> {/* New rectangle */}
       <BgSquare>
+        <div className="upload-section">
+          <input 
+            type="file" 
+            accept=".xlsx" 
+            id="fileInput" 
+            style={{ display: 'none' }} 
+            onChange={handleFileChange} 
+          />
+          <button className="upload-button" onClick={() => document.getElementById('fileInput').click()}>
+            Upload .xlsx File
+          </button>
+        </div>
         <div className="leftContent">
           <div className="summary-wrapper">
             <Summary data={processedData} />
           </div>
           <div className="pivot-wrapper">
-            <Pivot data={processedData} />
+            {/* Added CSS class for dropdown */}
+            <select className="pivot-dropdown" onChange={handlePivotChange}>
+              <option value="PIVOT VALUES">PIVOT VALUES</option>
+              <option value="PIVOT CONSUMPTION">PIVOT CONSUMPTION</option>
+            </select>
+            <Pivot data={processedData} selectedPivot={selectedPivot} />
           </div>
           <div className="toppref"></div>
-
         </div>
-
       </BgSquare>
-
     </div>
   );
 }

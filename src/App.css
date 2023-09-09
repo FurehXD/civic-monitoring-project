@@ -25,3 +25,50 @@
   flex-grow: 1;
   margin: 20px auto;
 }
+
+.upload-section {
+  display: flex;
+  justify-content: left; /* Center the button horizontally */
+  margin: 10px 0; /* Some margin for spacing */
+}
+
+.upload-button {
+  background-color: #4CAF50; /* Set the button background color */
+  color: white; /* Set the button text color */
+  padding: 10px 20px; /* Padding for the button */
+  border: none; /* Remove default borders */
+  border-radius: 4px; /* Slightly rounded corners */
+  cursor: pointer; /* Change the cursor on hover */
+  font-size: 16px; /* Font size for the button text */
+  transition: background-color 0.3s; /* Transition for a smooth color change */
+}
+
+.upload-button:hover {
+  background-color: #45a049; /* Slightly darker shade when hovered */
+}
+
+.pivot-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.pivot-dropdown {
+  width: 20%;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 16px; /* Font size for the dropdown text */
+  background-color: #d9d9d9;  /* Change the background color */
+  justify-content: flex-start; /* Align to the left side */
+  align-self: flex-start; /* Align to the left side */
+}
+
+.leftRectangle {
+  width: 14%; /* or whatever width you want */
+  height: 97%; /* or whatever height you want */
+  background-color: #ffffff; /* or any other color */
+  border-radius: 15px;
+  position: absolute; /* positioning it absolutely */
+  left: 5px; /* align to the left */
+  top: 15px; /* align to the top */
+}
+
