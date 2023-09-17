@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import * as XLSX from 'xlsx';
 import './App.css';
 import BgSquare from './components/boxbackground';
@@ -10,20 +11,34 @@ import TopPref from './components/TopPref';
 import DonutChart from './components/DonutChart';
 
 function App() {
-  const [rawData, setRawData] = useState([]);
-  const [selectedPivot, setSelectedPivot] = useState("PIVOT VALUES");
+  const [selectedPivot, setSelectedPivot] = React.useState("PIVOT VALUES");
+  const queryClient = useQueryClient();
 
-  // Fetch data from the server
-  useEffect(() => {
-    fetch('http://localhost:3001/getData?page=1&pageSize=50')
-      .then(response => response.json())
-      .then(fetchedData => {
-        setRawData(fetchedData);
-      })
-      .catch(error => {
-        console.error('There was an error fetching data:', error);
-      });
-  }, []);   // Dependency on selectedPivot added */
+  const setSelectedPivotMutation = useMutation(
+    selectedPivot => fetch('http://localhost:3001/setSelectedPivot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ selectedPivot })
+    }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('getData');
+      }
+    }
+  );
+
+  const { data: rawData = [], isLoading, isError } = useQuery(
+    'getData',
+    () => fetch('http://localhost:3001/getData').then(res => res.json()),
+    {
+      enabled: !setSelectedPivotMutation.isLoading
+    }
+  );
+
+  const handlePivotChange = async (e) => {
+    await setSelectedPivotMutation.mutateAsync(e.target.value);
+    setSelectedPivot(e.target.value);
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -85,12 +100,6 @@ function App() {
     const donutChartDataPercentSales = Object.values(summaryData)
     .slice(0, 3)  // Only take the first 3 rows
     .map(item => ({ name: item.CODE, value: item['TOTAL AMOUNT'] / Object.values(summaryData).reduce((sum, i) => sum + i['TOTAL AMOUNT'], 0) * 100 }));
-
-
-
-    const handlePivotChange = (e) => {
-      setSelectedPivot(e.target.value);
-    };
 
   return (
     <div className="App">
