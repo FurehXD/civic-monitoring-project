@@ -14,8 +14,10 @@ function Summary({ data }) {
         return acc;
     }, {});
 
-    const totalABCItems = Object.values(groupedData).reduce((sum, item) => sum + item["ABC ITEMS"], 0);
-    const totalAmount = Object.values(groupedData).reduce((sum, item) => sum + item["TOTAL AMOUNT"], 0);
+    // Only sum up the totals for categories 'A', 'B', and 'C'
+    const relevantCategories = ['A', 'B', 'C'];
+    const totalABCItems = Object.values(groupedData).reduce((sum, item) => relevantCategories.includes(item.CODE) ? sum + item["ABC ITEMS"] : sum, 0);
+    const totalAmount = Object.values(groupedData).reduce((sum, item) => relevantCategories.includes(item.CODE) ? sum + item["TOTAL AMOUNT"] : sum, 0);
 
     return (
         <div className="Summary">
@@ -36,9 +38,6 @@ function Summary({ data }) {
                       const percentItems = totalABCItems !== 0 ? (item["ABC ITEMS"] / totalABCItems) * 100 : 0;
                       const percentSales = totalAmount !== 0 ? (item["TOTAL AMOUNT"] / totalAmount) * 100 : 0;
 
-                      // Debug information
-                      console.log(`Code: ${item.CODE}, ABC ITEMS: ${item["ABC ITEMS"]}, % Items: ${percentItems.toFixed(2)}%, TOTAL AMOUNT: ${item["TOTAL AMOUNT"]}, % Sales: ${percentSales.toFixed(2)}%`);
-
                       return (
                           <tr key={idx}>
                               <td>{item.CODE}</td>
@@ -50,8 +49,6 @@ function Summary({ data }) {
                           </tr>
                       );
                   })}
-
-                        
                     </tbody>
                 </table>
             </div>

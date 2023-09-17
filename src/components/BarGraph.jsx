@@ -1,37 +1,90 @@
 import React from 'react';
-import { Bar } from 'react-chartjs-2';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
+import './BarGraph.css';
 
-function BarGraph({ data }) {
-  const totalAmounts = data.map(item => item["TOTAL AMOUNT"]);
+const CustomBarTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const name = payload[0].payload.name;
+    let value = payload[0].value;
 
-  // Calculate the sum of TOTAL AMOUNT for August
-  const augustTotal = totalAmounts.reduce((sum, amount) => sum + (isNaN(amount) ? 0 : parseFloat(amount)), 0);
+    // Format the value to include commas and limit to 2 decimal places
+    value = parseFloat(value).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
-  const chartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    datasets: [{
-      label: 'TOTAL AMOUNT',
-      data: [0, 0, 0, 0, 0, 0, 0, augustTotal, 0, 0, 0, 0], 
-      backgroundColor: 'rgba(75, 192, 192, 0.6)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1
-    }]
-  };
+    return (
+      <div className="custom-tooltip">
+        <p className="label">{`${name} : ${value}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
 
-  const chartOptions = {
-    scales: {
-      x: {
-        type: 'category',
-      },
-      y: {
-        type: 'linear',
-      }
-    }
-  };
+function RoundedBar(props) {
+  const { fill, x, y, width, height } = props;
+  return <rect x={x} y={y} rx={15} ry={15} width={width} height={height} style={{ fill }} />;
+}
+
+function CustomCursor(props) {
+  const { x, y, width, height } = props;
+  return <rect x={x} y={y} rx={15} ry={15} width={width} height={height} style={{ fill: 'gray', opacity: 0.3 }} />;
+}
+
+function CustomTick(props) {
+  const { x, y, payload } = props;
+  const month = payload.value.split(' ')[0];
+  if (payload.value.includes('Week 1')) {
+    return <text x={x + 30} y={y + 15} fill="#666" textAnchor="middle">{month}</text>
+  }
+  return null;
+}
+
+const MONTH_COLORS = {
+  January: '#3A43E0',
+  February: '#00C49F',
+  March: '#FFBB28',
+  April: '#3A43E0',
+  May: '#00C49F',
+  June: '#FFBB28',
+  July: '#3A43E0',
+  August: '#00C49F',
+  September: '#FFBB28',
+  October: '#3A43E0',
+  November: '#00C49F',
+  December: '#FFBB28'
+};
+
+function BarGraph() {
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+
+  const labels = months.flatMap(month => weeks.map(week => `${month} - ${week}`));
+  const data = labels.map((label, index) => ({ name: label, value: Math.floor(Math.random() * 1000000) }));
 
   return (
-    <div className="barGraphContainer">
-      <Bar data={chartData} options={chartOptions} key={augustTotal} />
+    <div className="barGraphContainer" style={{ backgroundColor: '#ddd' }}>
+      <BarChart 
+        width={1335} 
+        height={300} 
+        data={data}
+      >
+        <XAxis dataKey="name" tick={<CustomTick />} interval={0} />
+        <YAxis hide={false} tick={{ fontSize: 12 }} />
+        <Tooltip cursor={<CustomCursor />} content={<CustomBarTooltip />} />
+        <Bar dataKey="value" shape={<RoundedBar />} barSize={20}>
+          {
+            data.map((entry, index) => {
+              const month = entry.name.split(' ')[0];
+              return <Cell key={index} fill={MONTH_COLORS[month]} />;
+            })
+          }
+        </Bar>
+      </BarChart>
     </div>
   );
 }

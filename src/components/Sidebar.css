@@ -1,0 +1,43 @@
+.sidebar {
+    padding: 10px;
+    display: flex;
+    flex-direction: column; /* Stack the items vertically */
+  }
+  
+  .menuItem {
+    padding: 5px;
+    display: flex;
+    flex-direction: column; /* Stack the items vertically */
+  }
+  
+  .parent, .child, .grandChild {
+    display: flex;
+    flex-direction: column; /* Stack the items vertically */
+    white-space: nowrap;  /* Add this line */
+  }
+  
+  .parent {
+    font-weight: bold;
+  }
+  
+  .child, .grandChild {
+    padding-left: 20px;
+  }
+  
+  .menuItem a {
+    text-decoration: none;
+    color: black;
+    display: block;  /* Make sure the <a> element takes the full width */
+    white-space: nowrap;  /* Add this line */
+  }
+  
+  .menuItem a:hover {
+    background-color: #ccc;
+    cursor: pointer;
+  }
+
+  .boldText {
+    font-weight: bold;
+  }
+  
+  

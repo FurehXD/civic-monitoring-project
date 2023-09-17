@@ -1,74 +1,100 @@
+/* Common Variables */
+:root {
+  --main-bg-color: #d9d9d9;
+  --main-button-color: #4CAF50;
+  --main-font-size: 16px;
+  --main-margin: 5px;
+}
+
+/* Background Square */
 .BgSquare {
   display: flex;
-  flex-direction: column;  /* Stack children vertically */
-  justify-content: flex-end;  /* Align children to the bottom */
-  align-items: stretch;  /* Stretch children to fill the width */
-  height: 100vh;  /* Take up full viewport height */
-  
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  height: 100vh;
 }
 
+/* Left Content Section */
 .leftContent {
   display: flex;
-  flex-direction: column;  /* Stack children vertically */
-  flex-wrap: nowrap;  /* Don't wrap children */
-  overflow-y: auto;  /* Allow scrolling */
-  max-height: calc(100vh - 50px);  /* Maximum height */
+  flex-direction: column;
+  flex-wrap: nowrap;
+  overflow-y: auto;
+  max-height: calc(100vh - 50px);
+  margin: var(--main-margin);
 }
 
-.summary-wrapper, .pivot-wrapper, .toppref {
-  margin: 5px;
+.summary-wrapper {
+  display: flex;
+  flex-direction: column;
 }
 
-.toppref {
-  background-color: #d9d9d9;
-  border-radius: 15px;
-  flex-grow: 1;
-  margin: 20px auto;
-}
-
+/* Upload Section */
 .upload-section {
   display: flex;
-  justify-content: left; /* Center the button horizontally */
-  margin: 10px 0; /* Some margin for spacing */
+  justify-content: right;
+  margin: 10px 0;
 }
 
 .upload-button {
-  background-color: #4CAF50; /* Set the button background color */
-  color: white; /* Set the button text color */
-  padding: 10px 20px; /* Padding for the button */
-  border: none; /* Remove default borders */
-  border-radius: 4px; /* Slightly rounded corners */
-  cursor: pointer; /* Change the cursor on hover */
-  font-size: 16px; /* Font size for the button text */
-  transition: background-color 0.3s; /* Transition for a smooth color change */
+  position: absolute;
+  top: 820px;
+  left: 50px;
+  background-color: var(--main-button-color);
+  color: white;
+  padding: 0px 50px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: var(--main-font-size);
+  transition: background-color 0.3s;
 }
+
 
 .upload-button:hover {
-  background-color: #45a049; /* Slightly darker shade when hovered */
+  background-color: #45a049;
 }
 
+/* Pivot Wrapper */
 .pivot-wrapper {
   display: flex;
   flex-direction: column;
 }
 
+/* Pivot Dropdown */
 .pivot-dropdown {
   width: 20%;
-  padding: 5px;
+  padding: 3px;
+  font-size: var(--main-font-size);
+  background-color: var(--main-bg-color);
+  justify-content: flex-start;
+  align-self: flex-start;
   border-radius: 5px;
-  font-size: 16px; /* Font size for the dropdown text */
-  background-color: #d9d9d9;  /* Change the background color */
-  justify-content: flex-start; /* Align to the left side */
-  align-self: flex-start; /* Align to the left side */
+
 }
 
-.leftRectangle {
-  width: 14%; /* or whatever width you want */
-  height: 97%; /* or whatever height you want */
-  background-color: #ffffff; /* or any other color */
-  border-radius: 15px;
-  position: absolute; /* positioning it absolutely */
-  left: 5px; /* align to the left */
-  top: 15px; /* align to the top */
+
+/* Left Rectangle */
+.Sidebar {
+  width: 14%;
+  height: 97%;
+  background-color: #d9d9d9;
+  border-radius: 5px;
+  position: absolute;
+  left: 5px;
+  top: 15px;
 }
+
+/* Bar Graph Overlay */
+.barGraphOverlay {
+  width: 70%;
+  height: 30%;
+  position: absolute;
+  top: 30px;
+  left: 285px;
+  z-index: 100;
+  
+}
+
 

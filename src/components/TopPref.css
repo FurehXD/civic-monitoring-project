@@ -1,0 +1,62 @@
+.toppref {
+  width: 250px;
+  height: 59.7%;
+  background-color: #9e9b9b;
+  z-index: 0;
+  position: absolute;
+  top: 360px;
+  right: 280px;
+  overflow-y: auto;
+  border-radius: 5px;
+}
+
+/* Add these lines to style the scrollbar */
+.toppref::-webkit-scrollbar {
+  width: 8px;  /* Width of the scrollbar */
+}
+
+.toppref::-webkit-scrollbar-track {
+  background: #f1f1f1;  /* Background color of the track */
+  border-radius: 5px;  /* Rounded corners for track */
+}
+
+.toppref::-webkit-scrollbar-thumb {
+  background: #555;  /* Color of the scroll thumb */
+  border-radius: 5px;  /* Rounded corners for scroll thumb */
+}
+
+/* On hover, make scrollbar thumb a bit darker */
+.toppref::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Existing styles for header, list, and list items */
+.toppref h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #333;
+  background-color: #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.toppref ul {
+  list-style: none;
+  padding: 0;
+}
+
+.toppref ul li {
+  text-align: center;
+  margin-bottom: 12px;
+  padding: 5px;
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+.toppref ul li p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+}

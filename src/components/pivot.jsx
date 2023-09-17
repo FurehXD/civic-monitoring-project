@@ -12,8 +12,8 @@ function Pivot({ data, selectedPivot }) {
           <th>Part Number</th>
           <th>Description</th>
           <th>Cum Value</th>
-          <th>ABC</th>
           <th>C Qty</th>
+          <th>ABC</th>
         </tr>
       );
     } else if (selectedPivot === "PIVOT CONSUMPTION") {
@@ -40,8 +40,8 @@ function Pivot({ data, selectedPivot }) {
           <td>{item['PART NUMBER']}</td>
           <td>{item.DESCRIPTION}</td>
           <td>{parseFloat(item['CUM VALUE']).toLocaleString()}</td>
-          <td>{item.ABC}</td>
           <td>{parseFloat(item['C QTY']).toLocaleString()}</td>
+          <td>{item.ABC}</td>
         </tr>
       ));
     } else if (selectedPivot === "PIVOT CONSUMPTION") {

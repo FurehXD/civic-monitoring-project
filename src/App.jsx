@@ -5,11 +5,14 @@ import BgSquare from './components/boxbackground';
 import Pivot from './components/pivot';
 import Summary from './components/Summary';
 import BarGraph from './components/BarGraph';
+import Sidebar from './components/Sidebar';
+import TopPref from './components/TopPref';
+import DonutChart from './components/DonutChart';
 
 function App() {
   const [rawData, setRawData] = useState([]);
   const [selectedPivot, setSelectedPivot] = useState("PIVOT VALUES");
-
+  
   useEffect(() => {
     const files = ['Sany.xlsx', 'SDLG.xlsx', 'trucks.xlsx', 'UD.xlsx', 'Volvo_CE.xlsx', 'Bobcat.xlsx'];
 
@@ -30,7 +33,7 @@ function App() {
       )
     ).then(() => setRawData(combinedData));
 
-  }, [selectedPivot]);  // Dependency on selectedPivot added
+  }, [selectedPivot]);  // Dependency on selectedPivot added */
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -39,7 +42,7 @@ function App() {
       reader.onload = function(e) {
         const buffer = e.target.result;
         const workbook = XLSX.read(buffer, { type: 'binary' });
-        const worksheet = workbook.Sheets[selectedPivot];  // Use the selectedPivot here
+        const worksheet = workbook.Sheets[selectedPivot];
         if (worksheet) {
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
           setRawData(prevData => [...prevData, ...jsonData]);
@@ -66,40 +69,88 @@ function App() {
     return combinedData;
 
   }, [rawData]);
+  // Calculate Summary Data
+  const summaryData = useMemo(() => {
+    const groupedData = processedData.reduce((acc, item) => {
+      const code = item.CODE;
+      if (!acc[code]) {
+        acc[code] = { ...item, "ABC ITEMS": 0, "TOTAL AMOUNT": 0 };
+      }
+      acc[code]["ABC ITEMS"] += isNaN(item["ABC ITEMS"]) ? 0 : parseFloat(item["ABC ITEMS"]);
+      acc[code]["TOTAL AMOUNT"] += isNaN(item["TOTAL AMOUNT"]) ? 0 : parseFloat(item["TOTAL AMOUNT"]);
+      return acc;
+    }, {});
+    return groupedData;
+  }, [processedData]);
 
-  const handlePivotChange = (e) => {
-    setSelectedPivot(e.target.value);
-  };
+    // Create data for DonutChart components based on the Summary data
+    const donutChartDataABCItems = Object.values(summaryData)
+    .slice(0, 3)  // Only take the first 3 rows
+    .map(item => ({ name: item.CODE, value: item['ABC ITEMS'] }));
+
+    const donutChartDataTotalAmount = Object.values(summaryData)
+    .slice(0, 3)  // Only take the first 3 rows
+    .map(item => ({ name: item.CODE, value: item['TOTAL AMOUNT'] }));
+
+    const donutChartDataPercentSales = Object.values(summaryData)
+    .slice(0, 3)  // Only take the first 3 rows
+    .map(item => ({ name: item.CODE, value: item['TOTAL AMOUNT'] / Object.values(summaryData).reduce((sum, i) => sum + i['TOTAL AMOUNT'], 0) * 100 }));
+
+
+
+    const handlePivotChange = (e) => {
+      setSelectedPivot(e.target.value);
+    };
 
   return (
     <div className="App">
-    <div className="leftRectangle"></div> {/* New rectangle */}
+      <div className="Sidebar">
+        <Sidebar handleFileChange={handleFileChange} /> {/* Added handleFileChange as a prop */}
+      </div>
+      <div className="barGraphOverlay">
+        <BarGraph />
+      </div>
       <BgSquare>
-        <div className="upload-section">
-          <input 
-            type="file" 
-            accept=".xlsx" 
-            id="fileInput" 
-            style={{ display: 'none' }} 
-            onChange={handleFileChange} 
-          />
-          <button className="upload-button" onClick={() => document.getElementById('fileInput').click()}>
-            Upload .xlsx File
-          </button>
-        </div>
+      <TopPref data={processedData} />
+      
+      <DonutChart
+          data={donutChartDataABCItems}
+          width={400}
+          height={400}
+          innerRadius={80}
+          outerRadius={110}
+          wrapperClass="donutChartWrapper1"
+          label="ABC Items"
+        />
+        <DonutChart
+          data={donutChartDataTotalAmount}
+          width={400}
+          height={400}
+          innerRadius={80}
+          outerRadius={110}
+          wrapperClass="donutChartWrapper2"
+          label="Total Amount"
+        />
+        <DonutChart
+          data={donutChartDataPercentSales}
+          width={400}
+          height={400}
+          innerRadius={80}
+          outerRadius={110}
+          wrapperClass="donutChartWrapper3"
+          label="% Sales"
+        />
         <div className="leftContent">
           <div className="summary-wrapper">
-            <Summary data={processedData} />
-          </div>
-          <div className="pivot-wrapper">
-            {/* Added CSS class for dropdown */}
             <select className="pivot-dropdown" onChange={handlePivotChange}>
               <option value="PIVOT VALUES">PIVOT VALUES</option>
               <option value="PIVOT CONSUMPTION">PIVOT CONSUMPTION</option>
             </select>
+            <Summary data={processedData} />
+          </div>
+          <div className="pivot-wrapper">
             <Pivot data={processedData} selectedPivot={selectedPivot} />
           </div>
-          <div className="toppref"></div>
         </div>
       </BgSquare>
     </div>
