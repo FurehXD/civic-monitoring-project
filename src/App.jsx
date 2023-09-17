@@ -12,28 +12,18 @@ import DonutChart from './components/DonutChart';
 function App() {
   const [rawData, setRawData] = useState([]);
   const [selectedPivot, setSelectedPivot] = useState("PIVOT VALUES");
-  
+
+  // Fetch data from the server
   useEffect(() => {
-    const files = ['Sany.xlsx', 'SDLG.xlsx', 'trucks.xlsx', 'UD.xlsx', 'Volvo_CE.xlsx', 'Bobcat.xlsx'];
-
-    let combinedData = [];
-
-    Promise.all(
-      files.map(file => 
-        fetch(`${file}`)
-          .then(response => response.arrayBuffer())
-          .then(buffer => {
-            const workbook = XLSX.read(buffer, { type: 'buffer' });
-            const worksheet = workbook.Sheets[selectedPivot]; // Use the selectedPivot here
-            if (worksheet) {
-              const jsonData = XLSX.utils.sheet_to_json(worksheet);
-              combinedData.push(...jsonData);
-            }
-          })
-      )
-    ).then(() => setRawData(combinedData));
-
-  }, [selectedPivot]);  // Dependency on selectedPivot added */
+    fetch('http://localhost:3001/getData?page=1&pageSize=50')
+      .then(response => response.json())
+      .then(fetchedData => {
+        setRawData(fetchedData);
+      })
+      .catch(error => {
+        console.error('There was an error fetching data:', error);
+      });
+  }, []);   // Dependency on selectedPivot added */
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
