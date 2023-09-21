@@ -2,29 +2,41 @@
 
 .donutChartWrapper1,
 .donutChartWrapper2,
-.donutChartWrapper3 {
+.donutChartWrapper3,
+.donutChartWrapper4 {
+
   position: absolute;
 }
 
 .donutChartWrapper1 {
-    top: -50px; 
-    left: 1285px; 
+  left: 0px; 
 }
 
 .donutChartWrapper2 {
-  top: 250px;
-  left: 1285px; 
+  left: 400px; 
 }
 
 .donutChartWrapper3 {
-  top: 550px;
-  left: 1285px; 
+  left: 800px; 
+}
+
+.donutChartWrapper4 {
+  left: 1200px; 
 }
 
 .custom-tooltip {
     background-color: white;
     border: 1px solid #ccc;
     padding: 10px;
-    z-index: 10000; /* Make sure this is higher than the z-index of TopPref and other elements */
+    z-index: 1000; /* Make sure this is higher than the z-index of TopPref and other elements */
+  }
+
+  .donutChartsContainer {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: -100px;
+    left: -50px;
+    width: 100%;
   }
   

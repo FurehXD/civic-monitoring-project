@@ -7,8 +7,8 @@ import Pivot from './components/pivot';
 import Summary from './components/Summary';
 import BarGraph from './components/BarGraph';
 import Sidebar from './components/Sidebar';
-import TopPref from './components/TopPref';
 import DonutChart from './components/DonutChart';
+import { processRawData, calculateSummaryData } from './components/dataCalculations'; // Import the utility functions
 
 function App() {
   const [selectedPivot, setSelectedPivot] = React.useState("PIVOT VALUES");
@@ -22,14 +22,14 @@ function App() {
     }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries('getData');
+        queryClient.invalidateQueries(['getData', selectedPivot]);
       }
     }
   );
 
   const { data: rawData = [], isLoading, isError } = useQuery(
-    'getData',
-    () => fetch('http://localhost:3001/getData').then(res => res.json()),
+    ['getData', selectedPivot],  
+    () => fetch(`http://localhost:3001/getData?pivotType=${selectedPivot}`).then(res => res.json()),
     {
       enabled: !setSelectedPivotMutation.isLoading
     }
@@ -58,48 +58,34 @@ function App() {
   };
 
   const processedData = useMemo(() => {
-    let combinedData = [...rawData];
-    // Sort the combined data by "TOTAL VALUE" in descending order
-    combinedData.sort((a, b) => {
-      const aValue = isNaN(Number(a["TOTAL VALUE"])) ? -Infinity : Number(a["TOTAL VALUE"]);
-      const bValue = isNaN(Number(b["TOTAL VALUE"])) ? -Infinity : Number(b["TOTAL VALUE"]);
-      return bValue - aValue;
-    });
-
-    // Assign new ranks based on the sorted order
-    combinedData.forEach((item, index) => {
-      item.RANK = index + 1;
-    });
-
-    return combinedData;
-
-  }, [rawData]);
-  // Calculate Summary Data
+    return processRawData(rawData, selectedPivot);  // Use the utility function
+  }, [rawData, selectedPivot]);
+  
   const summaryData = useMemo(() => {
-    const groupedData = processedData.reduce((acc, item) => {
-      const code = item.CODE;
-      if (!acc[code]) {
-        acc[code] = { ...item, "ABC ITEMS": 0, "TOTAL AMOUNT": 0 };
-      }
-      acc[code]["ABC ITEMS"] += isNaN(item["ABC ITEMS"]) ? 0 : parseFloat(item["ABC ITEMS"]);
-      acc[code]["TOTAL AMOUNT"] += isNaN(item["TOTAL AMOUNT"]) ? 0 : parseFloat(item["TOTAL AMOUNT"]);
-      return acc;
-    }, {});
-    return groupedData;
+    return calculateSummaryData(processedData);  // Use the utility function
   }, [processedData]);
 
-    // Create data for DonutChart components based on the Summary data
-    const donutChartDataABCItems = Object.values(summaryData)
-    .slice(0, 3)  // Only take the first 3 rows
+  const filterABC = data => data.filter(item => ['A', 'B', 'C'].includes(item.CODE));
+
+  // Create data for DonutChart components based on the Summary data
+  const donutChartDataABCItems = filterABC(Object.values(summaryData))
     .map(item => ({ name: item.CODE, value: item['ABC ITEMS'] }));
-
-    const donutChartDataTotalAmount = Object.values(summaryData)
-    .slice(0, 3)  // Only take the first 3 rows
+  
+  const totalABCItems = filterABC(Object.values(summaryData))
+    .reduce((sum, item) => sum + item['ABC ITEMS'], 0);
+  
+  const donutChartDataPercentItems = filterABC(Object.values(summaryData))
+    .map(item => ({ name: item.CODE, value: (item['ABC ITEMS'] / totalABCItems) * 100 }));
+  
+  const donutChartDataTotalAmount = filterABC(Object.values(summaryData))
     .map(item => ({ name: item.CODE, value: item['TOTAL AMOUNT'] }));
-
-    const donutChartDataPercentSales = Object.values(summaryData)
-    .slice(0, 3)  // Only take the first 3 rows
-    .map(item => ({ name: item.CODE, value: item['TOTAL AMOUNT'] / Object.values(summaryData).reduce((sum, i) => sum + i['TOTAL AMOUNT'], 0) * 100 }));
+  
+  const totalAmount = filterABC(Object.values(summaryData))
+    .reduce((sum, item) => sum + item['TOTAL AMOUNT'], 0);
+  
+  const donutChartDataPercentSales = filterABC(Object.values(summaryData))
+    .map(item => ({ name: item.CODE, value: (item['TOTAL AMOUNT'] / totalAmount) * 100 }));
+  
 
   return (
     <div className="App">
@@ -107,45 +93,57 @@ function App() {
         <Sidebar handleFileChange={handleFileChange} /> {/* Added handleFileChange as a prop */}
       </div>
       <div className="barGraphOverlay">
-        <BarGraph />
       </div>
       <BgSquare>
-      <TopPref data={processedData} />
-      
+      <div className="donutChartsContainer">
       <DonutChart
-          data={donutChartDataABCItems}
-          width={400}
-          height={400}
-          innerRadius={80}
-          outerRadius={110}
-          wrapperClass="donutChartWrapper1"
-          label="ABC Items"
-        />
-        <DonutChart
-          data={donutChartDataTotalAmount}
-          width={400}
-          height={400}
-          innerRadius={80}
-          outerRadius={110}
-          wrapperClass="donutChartWrapper2"
-          label="Total Amount"
-        />
-        <DonutChart
-          data={donutChartDataPercentSales}
-          width={400}
-          height={400}
-          innerRadius={80}
-          outerRadius={110}
-          wrapperClass="donutChartWrapper3"
-          label="% Sales"
-        />
+        data={donutChartDataABCItems}
+        width={500}  
+        height={500} 
+        innerRadius={100} 
+        outerRadius={130} 
+        wrapperClass="donutChartWrapper1"
+        label="ABC Items"
+        isPercent={false} /* If this value is a percent value */
+      />
+      <DonutChart
+        data={donutChartDataPercentItems}
+        width={500}  
+        height={500} 
+        innerRadius={100} 
+        outerRadius={130} 
+        wrapperClass="donutChartWrapper2"
+        label="% Items"
+        isPercent={true}
+      />
+      <DonutChart
+        data={donutChartDataTotalAmount}
+        width={500}  
+        height={500}
+        innerRadius={100}
+        outerRadius={130}
+        wrapperClass="donutChartWrapper3"
+        label="Total Amount"
+        isPercent={false}
+      />
+      <DonutChart
+        data={donutChartDataPercentSales}
+        width={500}  
+        height={500} 
+        innerRadius={100} 
+        outerRadius={130}
+        wrapperClass="donutChartWrapper4"
+        label="% Sales"
+        isPercent={true}
+      />
+        </div>
         <div className="leftContent">
           <div className="summary-wrapper">
             <select className="pivot-dropdown" onChange={handlePivotChange}>
               <option value="PIVOT VALUES">PIVOT VALUES</option>
               <option value="PIVOT CONSUMPTION">PIVOT CONSUMPTION</option>
             </select>
-            <Summary data={processedData} />
+            <Summary data={summaryData} />
           </div>
           <div className="pivot-wrapper">
             <Pivot data={processedData} selectedPivot={selectedPivot} />

@@ -2,16 +2,16 @@ import React from 'react';
 import { PieChart, Pie, Cell, Tooltip, Label } from 'recharts';
 import './DonutChart.css';
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, isPercent }) => {
   if (active && payload && payload.length) {
     const name = payload[0].payload.name;
     let value = payload[0].value;
 
-    // Format the value to include commas and limit to 2 decimal places
-    value = parseFloat(value).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
+    if (isPercent) {
+      value = value.toFixed(2) + "%";
+    } else {
+      value = Math.ceil(value).toLocaleString();
+    }
 
     return (
       <div className="custom-tooltip">
@@ -23,10 +23,9 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 
-
-
-
-const DonutChart = ({ data, width, height, innerRadius, outerRadius, wrapperClass, label }) => {
+const DonutChart = ({ data, width, height, innerRadius, outerRadius, wrapperClass, label, isPercent }) => {
+  // Calculate the total for the data series here
+  const total = data.reduce((acc, item) => acc + item.value, 0);
   const COLORS = ['#3A43E0', '#00C49F', '#FFBB28'];
 
   return (
@@ -41,8 +40,8 @@ const DonutChart = ({ data, width, height, innerRadius, outerRadius, wrapperClas
           fill="#8884d8"
           paddingAngle={0}
           dataKey="value"
-          startAngle={90} // New
-          endAngle={-270} // New
+          startAngle={90} 
+          endAngle={-270} 
         >
           <Label value={label} position="center" />
           {data.map((entry, index) => (
@@ -50,7 +49,7 @@ const DonutChart = ({ data, width, height, innerRadius, outerRadius, wrapperClas
           ))}
         </Pie>
 
-        <Tooltip content={<CustomTooltip />} />
+        <Tooltip content={<CustomTooltip isPercent={isPercent} />} />
       </PieChart>
     </div>
   );

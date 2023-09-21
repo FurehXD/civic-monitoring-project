@@ -2,7 +2,7 @@
   max-height: 410px;
   overflow-y: auto;
   border: 1px solid #ddd;
-  width: 67%;  
+  width: 90%;  
 }
 
 /* Add these lines to style the scrollbar */
@@ -43,4 +43,11 @@
   top: 0;
   z-index: 10;
   background-color: #9e9b9b;
+}
+
+.truncate-text {
+  max-width: 80px; /* You can set this to whatever maximum width you want */
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
