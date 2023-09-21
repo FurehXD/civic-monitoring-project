@@ -2,6 +2,7 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from 'recharts';
 import './BarGraph.css';
 
+// Custom tooltip for the bar chart. Displays the name and formatted value.
 const CustomBarTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const name = payload[0].payload.name;
@@ -22,16 +23,19 @@ const CustomBarTooltip = ({ active, payload }) => {
   return null;
 };
 
+// Custom bar shape with rounded corners
 function RoundedBar(props) {
   const { fill, x, y, width, height } = props;
   return <rect x={x} y={y} rx={15} ry={15} width={width} height={height} style={{ fill }} />;
 }
 
+// Custom cursor for the bar chart. A rectangle with rounded corners and a gray, semi-transparent fill.
 function CustomCursor(props) {
   const { x, y, width, height } = props;
   return <rect x={x} y={y} rx={15} ry={15} width={width} height={height} style={{ fill: 'gray', opacity: 0.3 }} />;
 }
 
+// Custom X-Axis tick. Only displays the month for the first week of each month.
 function CustomTick(props) {
   const { x, y, payload } = props;
   const month = payload.value.split(' ')[0];
@@ -41,6 +45,7 @@ function CustomTick(props) {
   return null;
 }
 
+// Colors assigned to each month for the bars
 const MONTH_COLORS = {
   January: '#3A43E0',
   February: '#00C49F',
@@ -63,7 +68,10 @@ function BarGraph() {
   ];
   const weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
 
+  // Generate labels for each week of each month
   const labels = months.flatMap(month => weeks.map(week => `${month} - ${week}`));
+
+  // Generate random data for demonstration purposes
   const data = labels.map((label, index) => ({ name: label, value: Math.floor(Math.random() * 1000000) }));
 
   return (

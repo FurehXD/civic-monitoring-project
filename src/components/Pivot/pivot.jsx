@@ -1,8 +1,23 @@
 import React from 'react';
 import './Pivot.css';
 
+/**
+ * Pivot Component
+ * 
+ * This component displays pivot table data based on the selected pivot type:
+ * - PIVOT VALUES
+ * - PIVOT CONSUMPTION
+ * 
+ * The component has dynamic headers and rows based on the selected pivot type.
+ * 
+ * @param {Array} data - The processed data to be displayed in the pivot table.
+ * @param {String} selectedPivot - The selected pivot type.
+ */
 function Pivot({ data, selectedPivot }) {
 
+  /**
+   * Render table headers based on the selected pivot type.
+   */
   const renderTableHeaders = () => {
     if (selectedPivot === "PIVOT VALUES") {
       return (
@@ -31,6 +46,10 @@ function Pivot({ data, selectedPivot }) {
     }
   };
 
+  /**
+   * Render table rows based on the selected pivot type.
+   * This function also processes the data for display (e.g., rounding numbers).
+   */
   const renderTableRows = () => {
     if (selectedPivot === "PIVOT VALUES") {
       return data.map((item, idx) => {
@@ -41,10 +60,10 @@ function Pivot({ data, selectedPivot }) {
         return (
           <tr key={idx}>
             <td>{item.RANK}</td>
-            <td>{roundedTotalValue.toLocaleString()}</td> {/* Use the rounded value */}
+            <td>{roundedTotalValue.toLocaleString()}</td> {/* Display the rounded value */}
             <td>{item['PART NUMBER']}</td>
             <td className="truncate-text">{item.DESCRIPTION}</td>
-            <td>{roundedCumValue.toLocaleString()}</td> {/* Use the rounded value */}
+            <td>{roundedCumValue.toLocaleString()}</td> {/* Display the rounded value */}
             <td>{parseFloat(item['C QTY']).toLocaleString()}</td>
             <td>{item.ABC}</td>
           </tr>
@@ -62,8 +81,8 @@ function Pivot({ data, selectedPivot }) {
             <td>{parseFloat(item['TOTAL QTY']).toLocaleString()}</td>
             <td>{item['PART NUMBER']}</td>
             <td className="truncate-text">{item.DESCRIPTION}</td>
-            <td>{roundedTotalValueConsumption.toLocaleString()}</td> {/* Use the rounded value for "PIVOT CONSUMPTION" */}
-            <td>{roundedCumValueConsumption.toLocaleString()}</td> {/* Use the rounded value for "CUM QTY" */}
+            <td>{roundedTotalValueConsumption.toLocaleString()}</td> {/* Display the rounded value for "PIVOT CONSUMPTION" */}
+            <td>{roundedCumValueConsumption.toLocaleString()}</td> {/* Display the rounded value for "CUM QTY" */}
             <td>{item.ABC}</td>
           </tr>
         );

@@ -2,7 +2,7 @@
   max-height: 410px;
   overflow-y: auto;
   border: 1px solid #ddd;
-  width: 90%;  
+  width: 100%;  
 }
 
 /* Add these lines to style the scrollbar */
